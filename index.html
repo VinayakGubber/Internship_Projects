@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Journal</title>
+    <style>
+        :root {
+            /* Modern Dark Theme Palette */
+            --bg-body: #0f0f12;
+            --bg-panel: #18181b;
+            --accent: #6366f1; /* Indigo */
+            --accent-glow: rgba(99, 102, 241, 0.15);
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --border: #27272a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevents scrollbars on body */
+        }
+
+        /* --- 1. Top Navigation Bar --- */
+        nav {
+            height: 70px; /* Slight increase for better spacing */
+            background-color: var(--bg-panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            flex-shrink: 0;
+            z-index: 50;
+        }
+
+        /* NEW BRAND DESIGN */
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            group: 'brand'; /* For hover effects */
+            transition: opacity 0.2s;
+        }
+
+        .nav-brand:hover {
+            opacity: 0.9;
+        }
+
+        .logo-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--accent-glow);
+            border-radius: 10px;
+            color: var(--accent);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .nav-links {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Back Button in Nav (Hidden by default) */
+        .back-btn {
+            display: none;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            margin-right: auto; 
+            margin-left: 30px;
+        }
+        
+        .back-btn:hover {
+            color: white;
+            border-color: white;
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* --- 2. Main Layout Containers --- */
+        main {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            height: calc(100vh - 70px);
+            position: relative; 
+        }
+
+        /* Generic View Container */
+        .view-container {
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.3s ease;
+        }
+
+        /* --- VIEW A: Landing Page --- */
+        #landing-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3.5rem; 
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff 20%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 3rem;
+            letter-spacing: -0.03em;
+            max-width: 800px;
+            line-height: 1.1;
+        }
+
+        /* Project Buttons */
+        .controls {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-project {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border: none;
+            color: white;
+            padding: 18px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 0.02em;
+        }
+
+        .btn-project:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.5);
+            filter: brightness(1.1);
+        }
+
+        /* --- VIEW B: Project Page (Hidden by default) --- */
+        #project-view {
+            display: none; /* Hidden initially */
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+
+        .iframe-wrapper {
+            flex: 1; 
+            background: var(--bg-panel);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            height: 100%;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .btn-project { padding: 14px 24px; font-size: 1rem; width: 100%; }
+            .controls { flex-direction: column; width: 100%; max-width: 300px; }
+            main { padding: 10px; }
+            nav { padding: 0 16px; }
+            .brand-name { font-size: 1rem; }
+            .logo-icon { width: 32px; height: 32px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <nav>
+        <!-- NEW LOGO STRUCTURE -->
+        <div class="nav-brand" onclick="showLanding()">
+            <div class="logo-icon">
+                <!-- Spark Icon -->
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L14.4 7.2L20 9L14.4 10.8L12 16L9.6 10.8L4 9L9.6 7.2L12 2Z"></path>
+                </svg>
+            </div>
+        </div>
+        
+        <!-- Back Button -->
+        <button id="back-button" class="back-btn" onclick="showLanding()">← Back</button>
+        
+    </nav>
+
+    <!-- Main Content Area -->
+    <main>
+        
+        <!-- View 1: Landing Page -->
+        <div id="landing-view" class="view-container">
+            <h1>A pause to understand before you respond</h1>
+            
+            <div class="controls">
+                <button class="btn-project" onclick="openProject(1)">
+                    SayWise
+                </button>
+                <button class="btn-project" onclick="openProject(2)">
+                    MoodMirror
+                </button>
+            </div>
+        </div>
+
+        <!-- View 2: Project Page -->
+        <div id="project-view" class="view-container">
+            <div class="iframe-wrapper">
+                <iframe id="project-frame" src="" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"></iframe>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // CONFIGURATION
+        const projects = {
+            1: "https://vinayak43-senti-clean.hf.space", 
+            2: "https://vinayak43-face-expression-detection.hf.space" 
+        };
+
+        const landingView = document.getElementById('landing-view');
+        const projectView = document.getElementById('project-view');
+        const frame = document.getElementById('project-frame');
+        const backBtn = document.getElementById('back-button');
+
+        function openProject(projectId) {
+            const url = projects[projectId];
+            if(url) {
+                frame.src = url;
+            }
+
+            landingView.style.display = 'none';
+            projectView.style.display = 'flex';
+            
+            backBtn.style.display = 'block';
+        }
+
+        function showLanding() {
+            projectView.style.display = 'none';
+            landingView.style.display = 'flex';
+
+            backBtn.style.display = 'none';
+
+            frame.src = '';
+        }
+    </script>
+</body>
+</html>
